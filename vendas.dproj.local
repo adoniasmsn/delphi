@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2025/05/20 20:35:37.000.789,=C:\Users\Adonias\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/05/23 21:30:16.000.311,=C:\Users\Adonias\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/05/23 21:31:40.000.839,C:\Users\Adonias\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Projetos Delphi\uPrincipal.pas</Transaction>
+    <Transaction>2025/05/23 21:31:40.000.839,C:\Users\Adonias\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Projetos Delphi\uPrincipal.dfm</Transaction>
+    <Transaction>2025/05/23 21:31:45.000.992,C:\Users\Adonias\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Projetos Delphi\vendas.dproj</Transaction>
+    <Transaction>2025/05/24 22:33:04.000.848,=C:\Projetos Delphi\Unit1.pas</Transaction>
+    <Transaction>2025/05/24 23:07:13.000.864,C:\Projetos Delphi\Unit1.dfm=C:\Projetos Delphi\uconexaodb.dfm</Transaction>
+    <Transaction>2025/05/24 23:07:13.000.864,C:\Projetos Delphi\Unit1.pas=C:\Projetos Delphi\uconexaodb.pas</Transaction>
+    <Transaction>2025/05/25 18:44:56.000.437,=C:\Projetos Delphi\Unit1.pas</Transaction>
+    <Transaction>2025/05/25 18:46:28.000.172,C:\Projetos Delphi\heranca\uTelaHeranca.pas=C:\Projetos Delphi\Unit1.pas</Transaction>
+    <Transaction>2025/05/25 18:46:28.000.172,C:\Projetos Delphi\heranca\uTelaHeranca.dfm=C:\Projetos Delphi\Unit1.dfm</Transaction>
+    <Transaction>2025/05/25 20:26:59.000.310,=C:\Projetos Delphi\Unit1.pas</Transaction>
+    <Transaction>2025/05/25 20:27:20.000.336,C:\Projetos Delphi\cadastros\uCadCategoria.pas=C:\Projetos Delphi\Unit1.pas</Transaction>
+    <Transaction>2025/05/25 20:27:20.000.336,C:\Projetos Delphi\cadastros\uCadCategoria.dfm=C:\Projetos Delphi\Unit1.dfm</Transaction>
+    <Transaction>2025/05/29 19:18:28.000.640,=C:\Projetos Delphi\Unit1.pas</Transaction>
+    <Transaction>2025/05/29 19:19:02.000.988,C:\Projetos Delphi\Unit1.pas=C:\Projetos Delphi\heranca\uEnum.pas</Transaction>
+  </Transactions>
+</BorlandProject>

@@ -1,0 +1,15 @@
+object dtmPrincipal: TdtmPrincipal
+  OldCreateOrder = False
+  Height = 123
+  Width = 262
+  object ConexaoDB: TFDConnection
+    Params.Strings = (
+      'Database=VENDAS'
+      'User_Name=sa'
+      'Password=1234'
+      'Server=localhost'
+      'DriverID=MSSQL')
+    Connected = True
+    LoginPrompt = False
+  end
+end

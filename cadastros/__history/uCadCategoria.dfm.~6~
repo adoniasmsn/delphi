@@ -1,0 +1,41 @@
+inherited frmCadCategoria: TfrmCadCategoria
+  Caption = 'Cadastro de Categoria'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlRodape: TJvPanel
+    ExplicitTop = 546
+    ExplicitWidth = 981
+    inherited btnFechar: TJvBitBtn
+      ExplicitLeft = 893
+    end
+    inherited btnNavegation: TJvDBNavigator
+      Hints.Strings = ()
+    end
+  end
+  inherited pgcPrincipal: TJvgPageControl
+    ExplicitWidth = 981
+    ExplicitHeight = 546
+    inherited tablistagem: TTabSheet
+      ExplicitWidth = 973
+      ExplicitHeight = 518
+      inherited JvPanel2: TJvPanel
+        ExplicitWidth = 973
+      end
+    end
+    inherited tabManutencao: TTabSheet
+      ExplicitWidth = 973
+      ExplicitHeight = 518
+      inherited JvPanel1: TJvPanel
+        ExplicitWidth = 973
+      end
+    end
+  end
+  inherited qryListagem: TFDQuery
+    SQL.Strings = (
+      'select * from categoria')
+    Left = 552
+  end
+  inherited dtsListagem: TJvDataSource
+    Left = 616
+  end
+end

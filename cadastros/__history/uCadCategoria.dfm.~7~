@@ -1,0 +1,72 @@
+inherited frmCadCategoria: TfrmCadCategoria
+  Caption = 'Cadastro de Categoria'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlRodape: TJvPanel
+    ExplicitTop = 546
+    ExplicitWidth = 981
+    inherited btnFechar: TJvBitBtn
+      ExplicitLeft = 893
+    end
+    inherited btnNavegation: TJvDBNavigator
+      Hints.Strings = ()
+    end
+  end
+  inherited pgcPrincipal: TJvgPageControl
+    ExplicitWidth = 981
+    ExplicitHeight = 546
+    inherited tablistagem: TTabSheet
+      ExplicitWidth = 973
+      ExplicitHeight = 518
+      inherited JvPanel2: TJvPanel
+        ExplicitWidth = 973
+        inherited mskPesquisa: TJvMaskEdit
+          Top = 14
+          HintColor = clBackground
+          Color = clBtnFace
+          ParentFlat = False
+          ExplicitTop = 14
+        end
+      end
+      inherited grdListagem: TJvDBGrid
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'id_categoria'
+            Title.Caption = 'C'#243'digo da categoria'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'nome_categoria'
+            Title.Caption = 'Categoria'
+            Width = 230
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'descricao_categoria'
+            Title.Caption = 'Descri'#231#227'o da categoria'
+            Width = 314
+            Visible = True
+          end>
+      end
+    end
+    inherited tabManutencao: TTabSheet
+      ExplicitWidth = 973
+      ExplicitHeight = 518
+      inherited JvPanel1: TJvPanel
+        ExplicitWidth = 973
+      end
+    end
+  end
+  inherited qryListagem: TFDQuery
+    Active = True
+    SQL.Strings = (
+      'select * from Categoria')
+    Left = 552
+  end
+  inherited dtsListagem: TJvDataSource
+    Left = 616
+  end
+end

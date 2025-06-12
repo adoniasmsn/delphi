@@ -49,6 +49,7 @@ type
     procedure desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
           btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
     procedure controlindice(pgcPrincipal: TJvgPageControl; indice: integer);
+    procedure pgcPrincipalChange(Sender: TObject);
     { Private declarations }
   public
     { Public declarations }

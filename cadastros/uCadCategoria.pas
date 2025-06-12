@@ -15,6 +15,10 @@ uses
 
 type
   TfrmCadCategoria = class(TfrmHeranca)
+    edtCategoriaId: TLabeledEdit;
+    edtDescricao: TLabeledEdit;
+    edtNomeCategoria: TLabeledEdit;
+    procedure btnGravarClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -27,5 +31,21 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmCadCategoria.btnGravarClick(Sender: TObject);
+begin
+  if (edtNomeCategoria.Text= EmptyStr) then begin
+    ShowMessage('O nome da categoria é um campo obrigatorio!');
+    edtNomeCategoria.SetFocus;
+    abort;
+  end;
+   if (edtDescricao.Text= EmptyStr) then begin
+    ShowMessage('A descrição é um campo obrigatorio!');
+    edtDescricao.SetFocus;
+    abort;
+    end;
+  inherited;
+
+end;
 
 end.

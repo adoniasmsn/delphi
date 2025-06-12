@@ -44,6 +44,41 @@ inherited frmCadCategoria: TfrmCadCategoria
           end>
       end
     end
+    inherited tabManutencao: TTabSheet
+      object edtCategoriaId: TLabeledEdit
+        Left = 3
+        Top = 80
+        Width = 121
+        Height = 21
+        EditLabel.Width = 38
+        EditLabel.Height = 13
+        EditLabel.Caption = 'C'#243'digos'
+        MaxLength = 10
+        NumbersOnly = True
+        TabOrder = 1
+      end
+      object edtDescricao: TLabeledEdit
+        Left = 3
+        Top = 192
+        Width = 678
+        Height = 21
+        EditLabel.Width = 46
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Descri'#231#227'o'
+        TabOrder = 2
+      end
+      object edtNomeCategoria: TLabeledEdit
+        Left = 3
+        Top = 144
+        Width = 414
+        Height = 21
+        EditLabel.Width = 90
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Nome da categoria'
+        MaxLength = 100
+        TabOrder = 3
+      end
+    end
   end
   inherited qryListagem: TFDQuery
     Active = True

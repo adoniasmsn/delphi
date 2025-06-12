@@ -70,10 +70,6 @@ begin
  EstadoCadastro:=ecNovo;
 end;
 
-function TfrmHeranca.Cancelar: boolean;
-begin
-
-end;
 
 procedure TfrmHeranca.desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
           btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
@@ -159,13 +155,13 @@ end;
 
 procedure TfrmHeranca.FormShow(Sender: TObject);
 begin
-    if (qryListagem.SQL.Text<>EmptyStr) then
-      begin
-        qryListagem.OPEN;
-      end;
+  if (qryListagem.SQL.Text <> EmptyStr) then
+    qryListagem.Open;
 
-      desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
-              btnNavegation, pgcPrincipal, true);
+  desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+               btnNavegation, pgcPrincipal, true);
+
+  pgcPrincipal.TabIndex := 0;
 end;
 
 function TfrmHeranca.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
@@ -173,8 +169,8 @@ begin
     if (EstadoCadastro=ecNovo) then
       showmessage('Cadastro realizado')
   else if (EstadoCadastro=ecAlterar) then
-      showmessage('Alteração realizado')
-    result:= true;
+      showmessage('Alteração realizado') ;
+       Result:= true;
 end;
 
 function TfrmHeranca.Excluir: boolean;
@@ -187,6 +183,10 @@ procedure TfrmHeranca.grdListagemTitleClick(Column: TColumn);
 begin
     IndiceAtual:= Column.FieldName;
     qryListagem.IndexFieldNames := IndiceAtual;
+
+end;
+procedure TfrmHeranca.pgcPrincipalChange(Sender: TObject);
+begin
 
 end;
 

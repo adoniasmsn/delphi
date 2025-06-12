@@ -98,7 +98,7 @@ object frmHeranca: TfrmHeranca
     Top = 0
     Width = 981
     Height = 546
-    ActivePage = tablistagem
+    ActivePage = tabManutencao
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -189,10 +189,6 @@ object frmHeranca: TfrmHeranca
     object tabManutencao: TTabSheet
       Caption = 'Manuten'#231#227'o'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object JvPanel1: TJvPanel
         Left = 0
         Top = 0

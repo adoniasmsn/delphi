@@ -11,7 +11,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, JvDataSource, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client,uEnum;
+  FireDAC.Comp.Client,uEnum, cCadCategoria;
 
 
 type
@@ -34,6 +34,7 @@ type
     mskPesquisa: TJvMaskEdit;
     btnPesquisar: TJvBitBtn;
     grdListagem: TJvDBGrid;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnFecharClick(Sender: TObject);
     procedure btnNovoClick(Sender: TObject);
@@ -44,12 +45,17 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure grdListagemTitleClick(Column: TColumn);
+    procedure grdListagemDblClick(Sender: TObject);
   private
     EstadoCadastro: TEstadoCadastro;
+    oCategoria: TCategoria;
     procedure desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
           btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
     procedure controlindice(pgcPrincipal: TJvgPageControl; indice: integer);
     procedure pgcPrincipalChange(Sender: TObject);
+    function CampoObrigatorio: boolean;
+    procedure DesabilitareditPK;
+    procedure LimparEdit;
     { Private declarations }
   public
     { Public declarations }
@@ -69,6 +75,7 @@ begin
  desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
               btnNavegation, pgcPrincipal, false);
  EstadoCadastro:=ecNovo;
+ LimparEdit;
 end;
 
 
@@ -106,6 +113,7 @@ begin
                               btnNavegation, pgcPrincipal, true);
     controlindice(pgcPrincipal,0);
     EstadoCadastro:=ecNada;
+    LimparEdit;
   end;
 end;
 
@@ -115,6 +123,7 @@ begin
               btnNavegation, pgcPrincipal, true);
  controlindice(pgcPrincipal,0);
  EstadoCadastro:=ecNada;
+ LimparEdit;
 end;
 
 procedure TfrmHeranca.btnFecharClick(Sender: TObject);
@@ -124,30 +133,38 @@ end;
 
 procedure TfrmHeranca.btnGravarClick(Sender: TObject);
 begin
-     try
-     if Gravar(EstadoCadastro) then begin
+  if CampoObrigatorio then
+    Exit;  // Se tiver campo obrigatório vazio, sai e não grava.
 
-       desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
-                    btnNavegation, pgcPrincipal, true);
-       controlindice(pgcPrincipal,0);
-     end;
-     finally
-     if (EstadoCadastro=ecNovo) then
-          showmessage('Cadastro realizado')
-      else if (EstadoCadastro=ecAlterar) then
-          showmessage('Alteração realizado')
-       else
-          EstadoCadastro:=ecNada;
-     end;
+  try
+    if Gravar(EstadoCadastro) then
+    begin
+      desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+                   btnNavegation, pgcPrincipal, true);
+      controlindice(pgcPrincipal, 0);
+      LimparEdit;
+
+      if (EstadoCadastro = ecNovo) then
+        ShowMessage('Cadastro realizado')
+      else if (EstadoCadastro = ecAlterar) then
+        ShowMessage('Alteração realizada');
+    end;
+  finally
+    EstadoCadastro := ecNada;
+  end;
 end;
 
 procedure TfrmHeranca.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+      if Assigned(oCategoria) then
+        FreeAndNil(oCategoria);
+
       qryListagem.CLOSE;
 end;
 
 procedure TfrmHeranca.FormCreate(Sender: TObject);
 begin
+  oCategoria:=TCategoria.Create(TdtmPrincipal.ConexaoDB);
   qryListagem.Connection:=dtmPrincipal.ConexaoDB;
   dtsListagem.DataSet:=qryListagem;
   grdListagem.DataSource:=dtsListagem;
@@ -157,12 +174,53 @@ end;
 procedure TfrmHeranca.FormShow(Sender: TObject);
 begin
   if (qryListagem.SQL.Text <> EmptyStr) then
-    qryListagem.Open;
+    QryListagem.Open;
 
+  DesabilitareditPK;
   desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
                btnNavegation, pgcPrincipal, true);
 
-  pgcPrincipal.TabIndex := 0;
+   pgcPrincipal.TabIndex := 0;
+end;
+
+function TfrmHeranca.CampoObrigatorio:boolean;
+var i: integer;
+begin
+  result:=false;
+  for i := 0 to ComponentCount -1 do begin
+    if (Components[i] is TLabeledEdit) then begin
+      if (TLabeledEdit(Components[i]).Tag = 2) and
+          (TLabeledEdit(Components[i]).text = emptyStr) then begin
+            MessageDlg (TLabeledEdit(Components[i]).Editlabel.Caption + ' é um campo obrigatorio!',mtinformation,[mbok], 0);
+          TLabeledEdit(Components[i]).SetFocus;
+          Result := True;
+          Exit;
+          end;
+    end;
+  end;
+end;
+
+procedure TfrmHeranca.DesabilitareditPK;
+var i: integer;
+begin
+  for i := 0 to ComponentCount -1 do begin
+    if (Components[i] is TLabeledEdit) then begin
+      if (TLabeledEdit(Components[i]).Tag = 1) then begin
+            TLabeledEdit(Components[i]).Enabled := false;
+      end;
+    end;
+  end;
+end;
+
+procedure TfrmHeranca.LimparEdit;
+var i: integer;
+begin
+  for i := 0 to ComponentCount -1 do begin
+    if (Components[i] is TLabeledEdit) then
+      TLabeledEdit(Components[i]).Text:=''
+    else if (Components[i] is TEdit) then
+       TEdit(Components[i]).Text:='' ;
+  end;
 end;
 
 function TfrmHeranca.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
@@ -178,6 +236,11 @@ function TfrmHeranca.Excluir: boolean;
 begin
        ShowMessage('Deletado');
        Result:= true;
+end;
+
+procedure TfrmHeranca.grdListagemDblClick(Sender: TObject);
+begin
+       btnAlterar.Click;
 end;
 
 procedure TfrmHeranca.grdListagemTitleClick(Column: TColumn);

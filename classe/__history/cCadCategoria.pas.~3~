@@ -1,0 +1,39 @@
+unit cCadCategoria;
+
+interface
+
+uses System.classes, vcl.controls, vcl.extctrls, vcl.dialogs;
+
+type
+	TCategoria = class
+
+  private
+   F_id_categoria: integer;
+   F_nome_categoria: string;
+   F_descricao_categoria:string;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+  published
+    property id_categoria: integer   read getidcategoria write setidcategoria;
+    property nome_categoria :string  read getnomecategoria write setnomecategoria;
+    property descricao_categoria : string read getdescricaocategoria write setdescricaocategoria;
+  end;
+
+implementation
+
+{ TCategoria }
+
+constructor TCategoria.Create;
+begin
+    ShowMessage('Tela criada');
+end;
+
+destructor TCategoria.Destroy;
+begin
+  inherited;
+   ShowMessage('Tela destruida');
+end;
+
+end.

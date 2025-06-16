@@ -8,6 +8,7 @@ inherited frmCadCategoria: TfrmCadCategoria
     end
   end
   inherited pgcPrincipal: TJvgPageControl
+    ActivePage = tabManutencao
     inherited tablistagem: TTabSheet
       inherited JvPanel2: TJvPanel
         inherited mskPesquisa: TJvMaskEdit
@@ -45,7 +46,13 @@ inherited frmCadCategoria: TfrmCadCategoria
       end
     end
     inherited tabManutencao: TTabSheet
+      Tag = 1
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 973
+      ExplicitHeight = 518
       object edtCategoriaId: TLabeledEdit
+        Tag = 1
         Left = 3
         Top = 80
         Width = 121
@@ -57,17 +64,8 @@ inherited frmCadCategoria: TfrmCadCategoria
         NumbersOnly = True
         TabOrder = 1
       end
-      object edtDescricao: TLabeledEdit
-        Left = 3
-        Top = 192
-        Width = 678
-        Height = 21
-        EditLabel.Width = 46
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Descri'#231#227'o'
-        TabOrder = 2
-      end
-      object edtNomeCategoria: TLabeledEdit
+       object edtNomeCategoria: TLabeledEdit
+        Tag = 2
         Left = 3
         Top = 144
         Width = 414
@@ -76,8 +74,20 @@ inherited frmCadCategoria: TfrmCadCategoria
         EditLabel.Height = 13
         EditLabel.Caption = 'Nome da categoria'
         MaxLength = 100
+        TabOrder = 2
+      end
+      object edtDescricao: TLabeledEdit
+        Tag = 2
+        Left = 3
+        Top = 192
+        Width = 678
+        Height = 21
+        EditLabel.Width = 46
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Descri'#231#227'o'
         TabOrder = 3
       end
+     
     end
   end
   inherited qryListagem: TFDQuery

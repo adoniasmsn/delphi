@@ -12,11 +12,9 @@ inherited frmCadCategoria: TfrmCadCategoria
     inherited tablistagem: TTabSheet
       inherited JvPanel2: TJvPanel
         inherited mskPesquisa: TJvMaskEdit
-          Top = 14
           HintColor = clBackground
           Color = clBtnFace
           ParentFlat = False
-          ExplicitTop = 14
         end
       end
       inherited grdListagem: TJvDBGrid
@@ -64,7 +62,7 @@ inherited frmCadCategoria: TfrmCadCategoria
         NumbersOnly = True
         TabOrder = 1
       end
-       object edtNomeCategoria: TLabeledEdit
+      object edtNomeCategoria: TLabeledEdit
         Tag = 2
         Left = 3
         Top = 144
@@ -87,7 +85,6 @@ inherited frmCadCategoria: TfrmCadCategoria
         EditLabel.Caption = 'Descri'#231#227'o'
         TabOrder = 3
       end
-     
     end
   end
   inherited qryListagem: TFDQuery

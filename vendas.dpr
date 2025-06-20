@@ -6,7 +6,8 @@ uses
   uconexaodb in 'uconexaodb.pas' {dtmPrincipal: TDataModule},
   uTelaHeranca in 'heranca\uTelaHeranca.pas' {frmHeranca},
   uCadCategoria in 'cadastros\uCadCategoria.pas' {frmCadCategoria},
-  uEnum in 'heranca\uEnum.pas';
+  uEnum in 'heranca\uEnum.pas',
+  cCadCategoria in 'classe\cCadCategoria.pas';
 
 {$R *.res}
 

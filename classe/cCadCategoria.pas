@@ -22,9 +22,12 @@ type
     procedure setidcategoria(const Value: integer);
     procedure setnomecategoria(const Value: string);
   public
-    constructor Create;
+    constructor Create(aConexao:TFDConnection);
     destructor Destroy; override;
-
+    function Gravar:Boolean;
+    function Apagar:Boolean;
+    function Atualizar:Boolean;
+    function Selecionar(id:integer):Boolean;
   published
     property id_categoria: integer   read getidcategoria write setidcategoria;
     property nome_categoria :string  read getnomecategoria write setnomecategoria;
@@ -35,9 +38,29 @@ implementation
 
 { TCategoria }
 
-constructor TCategoria.Create;
+function TCategoria.Apagar: Boolean;
 begin
-    ShowMessage('Tela criada');
+
+end;
+
+function TCategoria.Atualizar: Boolean;
+begin
+
+end;
+
+function TCategoria.Gravar: Boolean;
+begin
+
+end;
+
+function TCategoria.Selecionar(id: integer): Boolean;
+begin
+
+end;
+
+constructor TCategoria.Create(aConexao:TFDConnection);
+begin
+    conexaoDB:=aConexao;
 end;
 
 destructor TCategoria.Destroy;

@@ -47,8 +47,6 @@ type
     procedure grdListagemTitleClick(Column: TColumn);
     procedure grdListagemDblClick(Sender: TObject);
   private
-    EstadoCadastro: TEstadoCadastro;
-    oCategoria: TCategoria;
     procedure desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
           btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
     procedure controlindice(pgcPrincipal: TJvgPageControl; indice: integer);
@@ -60,6 +58,7 @@ type
   public
     { Public declarations }
     IndiceAtual :string;
+    EstadoCadastro: TEstadoCadastro;
     function Excluir: boolean; virtual;
     function Gravar(EstadoCadastro:TEstadoCadastro): boolean; virtual;
   end;
@@ -134,7 +133,7 @@ end;
 procedure TfrmHeranca.btnGravarClick(Sender: TObject);
 begin
   if CampoObrigatorio then
-    Exit;  // Se tiver campo obrigatório vazio, sai e não grava.
+    Exit;
 
   try
     if Gravar(EstadoCadastro) then
@@ -156,15 +155,11 @@ end;
 
 procedure TfrmHeranca.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-      if Assigned(oCategoria) then
-        FreeAndNil(oCategoria);
-
       qryListagem.CLOSE;
 end;
 
 procedure TfrmHeranca.FormCreate(Sender: TObject);
 begin
-  oCategoria:=TCategoria.Create(TdtmPrincipal.ConexaoDB);
   qryListagem.Connection:=dtmPrincipal.ConexaoDB;
   dtsListagem.DataSet:=qryListagem;
   grdListagem.DataSource:=dtsListagem;

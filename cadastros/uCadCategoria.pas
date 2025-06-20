@@ -11,7 +11,7 @@ uses
   FireDAC.Comp.Client, Vcl.DBCtrls, JvDBControls, Vcl.Grids, Vcl.DBGrids,
   JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.Buttons, JvExButtons, JvBitBtn,
   Vcl.Mask, JvExMask, JvToolEdit, JvMaskEdit, Vcl.ExtCtrls, JvExExtCtrls,
-  JvExtComponent, JvPanel, Vcl.ComCtrls, JvgPage;
+  JvExtComponent, JvPanel, Vcl.ComCtrls, JvgPage, cCadCategoria, uconexaodb, uEnum;
 
 type
   TfrmCadCategoria = class(TfrmHeranca)
@@ -19,9 +19,13 @@ type
     edtDescricao: TLabeledEdit;
     edtNomeCategoria: TLabeledEdit;
   private
-    { Private declarations }
+    oCategoria: TCategoria;
+  published
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   public
-    { Public declarations }
+    function Excluir: boolean; virtual;
+    function Gravar(EstadoCadastro:TEstadoCadastro): boolean; virtual;
   end;
 
 var
@@ -31,4 +35,39 @@ implementation
 
 {$R *.dfm}
 
+function TfrmCadCategoria.Excluir: boolean;
+begin
+  result:= oCategoria.Apagar;
+end;
+
+function TfrmCadCategoria.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
+begin
+       if (EstadoCadastro=ecNovo) then
+          result:=oCategoria.Gravar
+       else if (EstadoCadastro=ecAlterar) then
+          result:=oCategoria.Atualizar;
+
+
+
+end;
+procedure TfrmCadCategoria.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if Assigned(oCategoria) then
+    FreeAndNil(oCategoria);
+
+  qryListagem.Close;
+end;
+
+procedure TfrmCadCategoria.FormCreate(Sender: TObject);
+begin
+  oCategoria := TCategoria.Create(dtmPrincipal.ConexaoDB);
+  qryListagem.Connection := dtmPrincipal.ConexaoDB;
+  dtsListagem.DataSet := qryListagem;
+  grdListagem.DataSource := dtsListagem;
+  btnNavegation.DataSource := dtsListagem;
+end;
+
+
+
 end.
+

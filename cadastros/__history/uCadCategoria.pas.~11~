@@ -1,0 +1,55 @@
+unit uCadCategoria;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uTelaHeranca, Data.DB,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, JvDataSource, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, Vcl.DBCtrls, JvDBControls, Vcl.Grids, Vcl.DBGrids,
+  JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.Buttons, JvExButtons, JvBitBtn,
+  Vcl.Mask, JvExMask, JvToolEdit, JvMaskEdit, Vcl.ExtCtrls, JvExExtCtrls,
+  JvExtComponent, JvPanel, Vcl.ComCtrls, JvgPage, cCadCategoria, uconexaodb;
+
+type
+  TfrmCadCategoria = class(TfrmHeranca)
+    edtCategoriaId: TLabeledEdit;
+    edtDescricao: TLabeledEdit;
+    edtNomeCategoria: TLabeledEdit;
+  private
+    oCategoria: TCategoria;
+  published
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadCategoria: TfrmCadCategoria;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmCadCategoria.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if Assigned(oCategoria) then
+    FreeAndNil(oCategoria);
+
+  qryListagem.Close;
+end;
+
+procedure TfrmCadCategoria.FormCreate(Sender: TObject);
+begin
+  oCategoria := TCategoria.Create(dtmPrincipal.ConexaoDB);
+  qryListagem.Connection := dtmPrincipal.ConexaoDB;
+  dtsListagem.DataSet := qryListagem;
+  grdListagem.DataSource := dtsListagem;
+  btnNavegation.DataSource := dtsListagem;
+end;
+
+end.
+

@@ -1,0 +1,191 @@
+unit uTelaHeranca;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.DBCtrls, JvDBControls,
+  Vcl.Grids, Vcl.DBGrids, JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.Buttons,
+  JvExButtons, JvBitBtn, Vcl.Mask, JvExMask, JvToolEdit, JvMaskEdit,
+  Vcl.ComCtrls, Vcl.ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel, JvgPage, uconexaodb,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, JvDataSource, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,uEnum;
+
+
+type
+  TfrmHeranca = class(TForm)
+    pnlRodape: TJvPanel;
+    btnNovo: TJvBitBtn;
+    btnAlterar: TJvBitBtn;
+    btnCancelar: TJvBitBtn;
+    btnApagar: TJvBitBtn;
+    btnFechar: TJvBitBtn;
+    btnNavegation: TJvDBNavigator;
+    btnGravar: TJvBitBtn;
+    qryListagem: TFDQuery;
+    dtsListagem: TJvDataSource;
+    pgcPrincipal: TJvgPageControl;
+    tablistagem: TTabSheet;
+    tabManutencao: TTabSheet;
+    JvPanel1: TJvPanel;
+    JvPanel2: TJvPanel;
+    mskPesquisa: TJvMaskEdit;
+    btnPesquisar: TJvBitBtn;
+    grdListagem: TJvDBGrid;
+    procedure FormCreate(Sender: TObject);
+    procedure btnFecharClick(Sender: TObject);
+    procedure btnNovoClick(Sender: TObject);
+    procedure btnAlterarClick(Sender: TObject);
+    procedure btnApagarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnGravarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure grdListagemTitleClick(Column: TColumn);
+    procedure pgcPrincipal(Sender: TObject);
+  private
+    EstadoCadastro: TEstadoCadastro;
+    procedure desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
+          btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
+    procedure controlindice(pgcPrincipal: TJvgPageControl; indice: integer);
+    { Private declarations }
+  public
+    { Public declarations }
+    IndiceAtual :string;
+    function Excluir: boolean; virtual;
+    function Gravar(EstadoCadastro:TEstadoCadastro): boolean; virtual;
+  end;
+
+var
+  frmHeranca: TfrmHeranca;
+
+implementation
+
+{$R *.dfm}
+procedure TfrmHeranca.btnNovoClick(Sender: TObject);
+begin
+ desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+              btnNavegation, pgcPrincipal, false);
+ EstadoCadastro:=ecNovo;
+end;
+
+
+procedure TfrmHeranca.desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
+          btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
+begin
+    btnNovo.Enabled:= Flag;
+    btnAlterar.Enabled:= Flag;
+    btnApagar.Enabled:=Flag;
+    btnNavegation.Enabled:=Flag;
+    pgcPrincipal.Pages[0].TabVisible :=Flag;
+    btnCancelar.Enabled:= not (Flag);
+    btnGravar.Enabled:= not (Flag);
+end;
+
+
+
+procedure TfrmHeranca.controlindice(pgcPrincipal: TJvgPageControl; indice: integer);
+begin
+  if (pgcPrincipal.Pages[indice].TabVisible) then
+  pgcPrincipal.TabIndex:=indice;
+
+end;
+procedure TfrmHeranca.btnAlterarClick(Sender: TObject);
+begin
+ desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+              btnNavegation, pgcPrincipal, false);
+ EstadoCadastro:=ecAlterar;
+end;
+
+procedure TfrmHeranca.btnApagarClick(Sender: TObject);
+begin
+  if Excluir then begin
+    desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+                              btnNavegation, pgcPrincipal, true);
+    controlindice(pgcPrincipal,0);
+    EstadoCadastro:=ecNada;
+  end;
+end;
+
+procedure TfrmHeranca.btnCancelarClick(Sender: TObject);
+begin
+ desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+              btnNavegation, pgcPrincipal, true);
+ controlindice(pgcPrincipal,0);
+ EstadoCadastro:=ecNada;
+end;
+
+procedure TfrmHeranca.btnFecharClick(Sender: TObject);
+begin
+  close
+end;
+
+procedure TfrmHeranca.btnGravarClick(Sender: TObject);
+begin
+     try
+     if Gravar(EstadoCadastro) then begin
+
+       desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+                    btnNavegation, pgcPrincipal, true);
+       controlindice(pgcPrincipal,0);
+     end;
+     finally
+     if (EstadoCadastro=ecNovo) then
+          showmessage('Cadastro realizado')
+      else if (EstadoCadastro=ecAlterar) then
+          showmessage('Alteração realizado')
+       else
+          EstadoCadastro:=ecNada;
+     end;
+end;
+
+procedure TfrmHeranca.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+      qryListagem.CLOSE;
+end;
+
+procedure TfrmHeranca.FormCreate(Sender: TObject);
+begin
+  qryListagem.Connection:=dtmPrincipal.ConexaoDB;
+  dtsListagem.DataSet:=qryListagem;
+  grdListagem.DataSource:=dtsListagem;
+  btnNavegation.DataSource:=dtsListagem;
+end;
+
+procedure TfrmHeranca.FormShow(Sender: TObject);
+begin
+  if (qryListagem.SQL.Text <> EmptyStr) then
+    qryListagem.Open;
+
+  desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+               btnNavegation, pgcPrincipal, true);
+
+  pgcPrincipal.TabIndex := 0;
+end;
+
+function TfrmHeranca.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
+begin
+    if (EstadoCadastro=ecNovo) then
+      showmessage('Cadastro realizado')
+  else if (EstadoCadastro=ecAlterar) then
+      showmessage('Alteração realizado') ;
+       Result:= true;
+end;
+
+function TfrmHeranca.Excluir: boolean;
+begin
+       ShowMessage('Deletado');
+       Result:= true;
+end;
+
+procedure TfrmHeranca.grdListagemTitleClick(Column: TColumn);
+begin
+    IndiceAtual:= Column.FieldName;
+    qryListagem.IndexFieldNames := IndiceAtual;
+
+end;
+
+
+end.

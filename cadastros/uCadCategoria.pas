@@ -18,14 +18,18 @@ type
     edtCategoriaId: TLabeledEdit;
     edtDescricao: TLabeledEdit;
     edtNomeCategoria: TLabeledEdit;
+    procedure btnAlterarClick(Sender: TObject);
   private
     oCategoria: TCategoria;
+
   published
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
   public
-    function Excluir: boolean; virtual;
-    function Gravar(EstadoCadastro:TEstadoCadastro): boolean; virtual;
+        EstadoCadastro: TEstadoCadastro;
+
+    function Apagar: boolean; override;
+    function Gravar(EstadoCadastro:TEstadoCadastro): boolean; override;
   end;
 
 var
@@ -35,21 +39,52 @@ implementation
 
 {$R *.dfm}
 
-function TfrmCadCategoria.Excluir: boolean;
+function TfrmCadCategoria.Apagar: boolean;
 begin
+if oCategoria.Selecionar(QryListagem.FieldByName('id_categoria').AsInteger) then
   result:= oCategoria.Apagar;
 end;
 
 function TfrmCadCategoria.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
 begin
-       if (EstadoCadastro=ecNovo) then
-          result:=oCategoria.Gravar
-       else if (EstadoCadastro=ecAlterar) then
-          result:=oCategoria.Atualizar;
+  if edtCategoriaId.Text <> Emptystr then
+    oCategoria.id_categoria := StrToInt(edtCategoriaId.Text)
+  else
+    oCategoria.id_categoria := 0;
 
+  oCategoria.nome_categoria := edtNomeCategoria.Text;
+  oCategoria.descricao_categoria := edtDescricao.Text;
 
+  if (EstadoCadastro = ecNovo) then
+  begin
+    Result := oCategoria.Gravar;
+    ShowMessage('Categoria gravada com sucesso!');
+  end
+  else if (EstadoCadastro = ecAlterar) then
+  begin
+    Result := oCategoria.Atualizar;
+    ShowMessage('Categoria atualizada com sucesso!');
+  end
+  else
+    Result := False;
+end;
+procedure TfrmCadCategoria.btnAlterarClick(Sender: TObject);
+begin
+if oCategoria.Selecionar(QryListagem.FieldByName('id_categoria').AsInteger) then
+begin
+  edtCategoriaId.Text:=IntToStr(oCategoria.id_categoria);
+  edtNomeCategoria.Text:=oCategoria.nome_categoria;
+  edtDescricao.Text:=oCategoria.descricao_categoria;
+end
+else begin
+  btnCancelar.Click;
+  abort
+end;
+
+  inherited;
 
 end;
+
 procedure TfrmCadCategoria.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if Assigned(oCategoria) then
@@ -66,6 +101,7 @@ begin
   grdListagem.DataSource := dtsListagem;
   btnNavegation.DataSource := dtsListagem;
 end;
+
 
 
 

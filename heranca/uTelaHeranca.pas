@@ -35,6 +35,9 @@ type
     btnPesquisar: TJvBitBtn;
     grdListagem: TJvDBGrid;
     Label1: TLabel;
+    edtPesquisar: TEdit;
+    dsCadastro: TDataSource;
+    qryCadastro: TFDQuery;
     procedure FormCreate(Sender: TObject);
     procedure btnFecharClick(Sender: TObject);
     procedure btnNovoClick(Sender: TObject);
@@ -54,12 +57,14 @@ type
     function CampoObrigatorio: boolean;
     procedure DesabilitareditPK;
     procedure LimparEdit;
+
     { Private declarations }
   public
     { Public declarations }
     IndiceAtual :string;
     EstadoCadastro: TEstadoCadastro;
-    function Excluir: boolean; virtual;
+    function Apagar: boolean; virtual;
+     procedure btnPesquisarClick(Sender: TObject); virtual;
     function Gravar(EstadoCadastro:TEstadoCadastro): boolean; virtual;
   end;
 
@@ -107,12 +112,13 @@ end;
 
 procedure TfrmHeranca.btnApagarClick(Sender: TObject);
 begin
-  if Excluir then begin
+  if Apagar then begin
     desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
                               btnNavegation, pgcPrincipal, true);
     controlindice(pgcPrincipal,0);
     EstadoCadastro:=ecNada;
     LimparEdit;
+    qrylistagem.refresh   ;
   end;
 end;
 
@@ -142,11 +148,7 @@ begin
                    btnNavegation, pgcPrincipal, true);
       controlindice(pgcPrincipal, 0);
       LimparEdit;
-
-      if (EstadoCadastro = ecNovo) then
-        ShowMessage('Cadastro realizado')
-      else if (EstadoCadastro = ecAlterar) then
-        ShowMessage('Alteração realizada');
+      qrylistagem.refresh;
     end;
   finally
     EstadoCadastro := ecNada;
@@ -227,7 +229,7 @@ begin
        Result:= true;
 end;
 
-function TfrmHeranca.Excluir: boolean;
+function TfrmHeranca.Apagar: boolean;
 begin
        ShowMessage('Deletado');
        Result:= true;
@@ -245,6 +247,11 @@ begin
 
 end;
 procedure TfrmHeranca.pgcPrincipalChange(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmHeranca.btnPesquisarClick(Sender: TObject);
 begin
 
 end;

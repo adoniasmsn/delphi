@@ -4,7 +4,7 @@ interface
 
 uses System.classes, vcl.controls, vcl.extctrls, vcl.dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
-  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MSSQL,
+  FireDAC.Stan.Pool, system.SysUtils, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.MSSQL,
   FireDAC.Phys.MSSQLDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client;
 
 type
@@ -39,23 +39,120 @@ implementation
 { TCategoria }
 
 function TCategoria.Apagar: Boolean;
+var
+  QryApagar: TFDQuery;
 begin
+  Result := False;
 
+  // Confirmação antes de apagar
+  if MessageDlg('Deseja realmente apagar a categoria '+F_nome_categoria+'?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+    Exit; // se o usuário escolher "Não", apenas sai da função
+
+  try
+    QryApagar := TFDQuery.Create(nil);
+    QryApagar.Connection := conexaoDB;
+    QryApagar.SQL.Clear;
+    QryApagar.SQL.Add('DELETE FROM Categoria WHERE id_categoria = :id_categoria');
+    QryApagar.ParamByName('id_categoria').Value := F_id_categoria;
+
+    try
+      QryApagar.ExecSQL;
+      Result := True;
+    except
+      Result := False;
+    end;
+  finally
+    if Assigned(QryApagar) then
+      FreeAndNil(QryApagar);
+  end;
 end;
 
 function TCategoria.Atualizar: Boolean;
+var
+  QryAtualizar: TFDQuery;
 begin
+  try
+    Result := True;
+    QryAtualizar := TFDQuery.Create(nil);
+    QryAtualizar.Connection := conexaoDB;
+    QryAtualizar.SQL.Clear;
+    QryAtualizar.SQL.Add(
+      'UPDATE Categoria ' +
+      'SET nome_categoria = :nome_categoria, descricao_categoria = :descricao_categoria ' +
+      'WHERE id_categoria = :id_categoria');
 
+    QryAtualizar.ParamByName('nome_categoria').Value := Self.F_nome_categoria;
+    QryAtualizar.ParamByName('descricao_categoria').Value := Self.F_descricao_categoria;
+    QryAtualizar.ParamByName('id_categoria').Value := Self.F_id_categoria;
+
+    try
+      QryAtualizar.ExecSQL;
+    except
+      Result := False;
+    end;
+  finally
+    if Assigned(QryAtualizar) then
+      FreeAndNil(QryAtualizar);
+  end;
 end;
 
 function TCategoria.Gravar: Boolean;
+var QryGravar:TFDQuery;
 begin
 
+          try
+            result:= true;
+             QryGravar:=TFDQuery.Create(nil);
+             QryGravar.Connection:=conexaoDB;
+             QryGravar.SQL.Clear;
+             QryGravar.SQL.Add('INSERT INTO Categoria (nome_categoria, descricao_categoria) VALUES (:nome_categoria, :descricao_categoria)') ;
+             QryGravar.ParamByName('nome_categoria').Value:=self.F_nome_categoria;
+             QryGravar.ParamByName('descricao_categoria').Value:=self.F_descricao_categoria;
+
+             try
+             QryGravar.ExecSQL;
+             Except
+                   result:=false;
+             end;
+          finally
+               if Assigned(QryGravar) then
+               freeandNil(QryGravar);
+          end;
 end;
 
 function TCategoria.Selecionar(id: integer): Boolean;
+var
+  QrySelecionar: TFDQuery;
 begin
+  try
+    Result := False;
+    QrySelecionar := TFDQuery.Create(nil);
+    QrySelecionar.Connection := conexaoDB;
+    QrySelecionar.SQL.Clear;
+    QrySelecionar.SQL.Add(
+      'SELECT id_categoria, nome_categoria, descricao_categoria ' +
+      'FROM Categoria ' +
+      'WHERE id_categoria = :id_categoria');
 
+    QrySelecionar.ParamByName('id_categoria').Value := id;
+
+    try
+      QrySelecionar.Open;
+      if not QrySelecionar.IsEmpty then
+      begin
+        // Preenche os atributos da classe com os valores do banco
+        Self.F_id_categoria := QrySelecionar.FieldByName('id_categoria').AsInteger;
+        Self.F_nome_categoria := QrySelecionar.FieldByName('nome_categoria').AsString;
+        Self.F_descricao_categoria := QrySelecionar.FieldByName('descricao_categoria').AsString;
+        Result := True;
+      end;
+    except
+      Result := False;
+    end;
+  finally
+    if Assigned(QrySelecionar) then
+      FreeAndNil(QrySelecionar);
+  end;
 end;
 
 constructor TCategoria.Create(aConexao:TFDConnection);
@@ -66,7 +163,6 @@ end;
 destructor TCategoria.Destroy;
 begin
   inherited;
-   ShowMessage('Tela destruida');
 end;
 
 function TCategoria.getdescricaocategoria: string;

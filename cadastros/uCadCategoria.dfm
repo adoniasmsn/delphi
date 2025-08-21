@@ -8,6 +8,7 @@ inherited frmCadCategoria: TfrmCadCategoria
     end
   end
   inherited pgcPrincipal: TJvgPageControl
+    ActivePage = tabManutencao
     inherited tablistagem: TTabSheet
       inherited JvPanel2: TJvPanel
         inherited mskPesquisa: TJvMaskEdit
@@ -44,6 +45,10 @@ inherited frmCadCategoria: TfrmCadCategoria
     end
     inherited tabManutencao: TTabSheet
       Tag = 1
+      ExplicitLeft = 4
+      ExplicitTop = 24
+      ExplicitWidth = 973
+      ExplicitHeight = 518
       object edtCategoriaId: TLabeledEdit
         Tag = 1
         Left = 3

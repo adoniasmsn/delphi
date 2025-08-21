@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, JvMenus, Vcl.StdCtrls,
-  JvExForms, JvScrollBox;
+  JvExForms, JvScrollBox, Vcl.Mask, JvExMask, JvToolEdit, JvBaseEdits;
 
 type
   TfrmPrincipal = class(TForm)
@@ -28,8 +28,9 @@ type
     procedure CATEGORIA2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-
+    procedure CLIENTE3Click(Sender: TObject);
   private
+
 
   public
 
@@ -42,9 +43,14 @@ implementation
 
 {$R *.dfm}
 
-uses uCadCategoria, uconexaodb;
+uses uCadCategoria, uconexaodb, uCadClientes;
 
-
+procedure TfrmPrincipal.CLIENTE3Click(Sender: TObject);
+begin
+frmCadClientes:= TfrmCadClientes.Create(Self);
+frmCadClientes.ShowModal;
+frmCadClientes.Release;
+end;
 
 procedure TfrmPrincipal.CATEGORIA2Click(Sender: TObject);
 begin

@@ -3,15 +3,16 @@ unit uCadClientes;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uTelaHeranca, Data.DB,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, JvDataSource, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, JvExDBGrids, JvDBGrid,
-  Vcl.StdCtrls, Vcl.Mask, JvExMask, JvToolEdit, JvMaskEdit, Vcl.ComCtrls,
-  JvgPage, Vcl.DBCtrls, JvDBControls, Vcl.Buttons, JvExButtons, JvBitBtn,
-  Vcl.ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel, JvExControls, JvLabel;
+  FireDAC.Comp.Client, Vcl.DBCtrls, JvDBControls, Vcl.Grids, Vcl.DBGrids,
+  JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.Buttons, JvExButtons, JvBitBtn,
+  Vcl.Mask, JvExMask, JvToolEdit, JvMaskEdit, Vcl.ExtCtrls, JvExExtCtrls,
+  JvExtComponent, JvPanel, Vcl.ComCtrls, JvgPage, cCadCliente, uconexaodb, uEnum,
+  JvExControls, JvLabel, JvExComCtrls, JvDateTimePicker, JvDBDateTimePicker;
 
 type
   TfrmCadClientes = class(TfrmHeranca)
@@ -20,7 +21,6 @@ type
     edtEmail: TLabeledEdit;
     edtEndereco: TLabeledEdit;
     JvLabel1: TJvLabel;
-    edtDataNascimento: TJvDateEdit;
     JvLabel2: TJvLabel;
     edtTelefone: TJvMaskEdit;
     JvLabel3: TJvLabel;
@@ -28,10 +28,19 @@ type
     edtCidade: TLabeledEdit;
     edtBairro: TLabeledEdit;
     JvMaskEdit1: TJvMaskEdit;
+    edtDataNascimento: TJvDateEdit;
+     procedure btnAlterarClick(Sender: TObject);
   private
+          oCliente:TCliente;
     { Private declarations }
+  published
+   procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   public
-    { Public declarations }
+   function Apagar: boolean;override  ;
+
+
+    function Gravar(EstadoCadastro: TEstadoCadastro): boolean; override; { Public declarations }
   end;
 
 var
@@ -40,5 +49,81 @@ var
 implementation
 
 {$R *.dfm}
+       function TfrmCadClientes.Apagar: boolean;
+begin
+if oCliente.Selecionar(QryListagem.FieldByName('id_cliente').AsInteger) then
+  begin
+  result:= oCliente.Apagar;
+  end;
+end;
 
+function TfrmCadClientes.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
+begin
+  if edtClienteId.Text <> Emptystr then
+    oCliente.id_cliente := StrToInt(edtClienteId.Text)
+  else
+    oCliente.id_Cliente := 0;
+
+  oCliente.nome := edtNome.Text;
+  oCliente.email := edtEmail.Text;
+  oCliente.telefone := edtTelefone.Text;
+  oCliente.endereco := edtEndereco.Text;
+  oCliente.cidade := edtCidade.Text;
+  oCliente.bairro := edtBairro.Text;
+  oCliente.cep := JvMaskEdit1.Text;
+  oCliente.dataNascimento := edtDataNascimento.Date;
+  oCliente.estado := edtEstado.Text;
+  if (EstadoCadastro = ecNovo) then
+  begin
+    Result := oCliente.Gravar;
+    ShowMessage('CLiente gravado com sucesso!');
+  end
+  else if (EstadoCadastro = ecAlterar) then
+  begin
+    Result := oCliente.Atualizar;
+    ShowMessage('cliente atualizado com sucesso!');
+  end
+  else
+    Result := False;
+end;
+procedure TfrmCadClientes.btnAlterarClick(Sender: TObject);
+begin
+if oCliente.Selecionar(QryListagem.FieldByName('id_cliente').AsInteger) then
+begin
+  edtClienteId.Text:=IntToStr(oCliente.id_cliente);
+   edtNome.Text := oCliente.nome;
+    edtEmail.Text := oCliente.email;
+    edtEndereco.Text := oCliente.endereco;
+    edtTelefone.Text := oCliente.telefone;
+    edtEstado.Text := oCliente.estado;
+    edtCidade.Text := oCliente.cidade;
+    edtBairro.Text := oCliente.bairro;
+    JvMaskEdit1.Text := oCliente.cep;
+    edtDataNascimento.Date := oCliente.dataNascimento;
+end
+else begin
+  btnCancelar.Click;
+  abort
+end;
+
+  inherited;
+
+end;
+
+procedure TfrmCadClientes.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if Assigned(oCliente) then
+    FreeAndNil(oCliente);
+
+  qryListagem.Close;
+end;
+
+procedure TfrmCadClientes.FormCreate(Sender: TObject);
+begin
+  oCliente := TCliente.Create(dtmPrincipal.ConexaoDB);
+  qryListagem.Connection := dtmPrincipal.ConexaoDB;
+  dtsListagem.DataSet := qryListagem;
+  grdListagem.DataSource := dtsListagem;
+  btnNavegation.DataSource := dtsListagem;
+end;
 end.

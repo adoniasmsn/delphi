@@ -11,8 +11,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, JvDataSource, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client,uEnum, cCadCategoria;
-
+  FireDAC.Comp.Client, uEnum, cCadCategoria;
 
 type
   TfrmHeranca = class(TForm)
@@ -35,9 +34,6 @@ type
     btnPesquisar: TJvBitBtn;
     grdListagem: TJvDBGrid;
     Label1: TLabel;
-    edtPesquisar: TEdit;
-    dsCadastro: TDataSource;
-    qryCadastro: TFDQuery;
     procedure FormCreate(Sender: TObject);
     procedure btnFecharClick(Sender: TObject);
     procedure btnNovoClick(Sender: TObject);
@@ -49,22 +45,19 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure grdListagemTitleClick(Column: TColumn);
     procedure grdListagemDblClick(Sender: TObject);
+    procedure pgcPrincipalChange(Sender: TObject);
+    procedure btnPesquisarClick(Sender: TObject); virtual;
   private
     procedure desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
           btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
     procedure controlindice(pgcPrincipal: TJvgPageControl; indice: integer);
-    procedure pgcPrincipalChange(Sender: TObject);
     function CampoObrigatorio: boolean;
     procedure DesabilitareditPK;
     procedure LimparEdit;
-
-    { Private declarations }
   public
-    { Public declarations }
     IndiceAtual :string;
     EstadoCadastro: TEstadoCadastro;
     function Apagar: boolean; virtual;
-     procedure btnPesquisarClick(Sender: TObject); virtual;
     function Gravar(EstadoCadastro:TEstadoCadastro): boolean; virtual;
   end;
 
@@ -74,66 +67,65 @@ var
 implementation
 
 {$R *.dfm}
+
 procedure TfrmHeranca.btnNovoClick(Sender: TObject);
 begin
- desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
-              btnNavegation, pgcPrincipal, false);
- EstadoCadastro:=ecNovo;
- LimparEdit;
+  desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+               btnNavegation, pgcPrincipal, false);
+  EstadoCadastro := ecNovo;
+  LimparEdit;
 end;
 
-
-procedure TfrmHeranca.desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar :TJvBitBtn;
-          btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag:boolean);
+procedure TfrmHeranca.desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar: TJvBitBtn;
+  btnNavegation: TJvDBNavigator; pgcPrincipal: TJvgPageControl; Flag: boolean);
 begin
-    btnNovo.Enabled:= Flag;
-    btnAlterar.Enabled:= Flag;
-    btnApagar.Enabled:=Flag;
-    btnNavegation.Enabled:=Flag;
-    pgcPrincipal.Pages[0].TabVisible :=Flag;
-    btnCancelar.Enabled:= not (Flag);
-    btnGravar.Enabled:= not (Flag);
+  btnNovo.Enabled := Flag;
+  btnAlterar.Enabled := Flag;
+  btnApagar.Enabled := Flag;
+  btnNavegation.Enabled := Flag;
+  pgcPrincipal.Pages[0].TabVisible := Flag;
+  btnCancelar.Enabled := not Flag;
+  btnGravar.Enabled := not Flag;
 end;
-
-
 
 procedure TfrmHeranca.controlindice(pgcPrincipal: TJvgPageControl; indice: integer);
 begin
   if (pgcPrincipal.Pages[indice].TabVisible) then
-  pgcPrincipal.TabIndex:=indice;
-
+    pgcPrincipal.TabIndex := indice;
 end;
+
 procedure TfrmHeranca.btnAlterarClick(Sender: TObject);
 begin
- desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
-              btnNavegation, pgcPrincipal, false);
- EstadoCadastro:=ecAlterar;
+  desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+               btnNavegation, pgcPrincipal, false);
+  EstadoCadastro := ecAlterar;
 end;
 
 procedure TfrmHeranca.btnApagarClick(Sender: TObject);
 begin
-  if Apagar then begin
-    desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
-                              btnNavegation, pgcPrincipal, true);
-    controlindice(pgcPrincipal,0);
-    EstadoCadastro:=ecNada;
+  if Apagar then
+  begin
+    desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+                 btnNavegation, pgcPrincipal, true);
+    controlindice(pgcPrincipal, 0);
+    EstadoCadastro := ecNada;
     LimparEdit;
-    qrylistagem.refresh   ;
+    qrylistagem.Refresh;
   end;
 end;
 
 procedure TfrmHeranca.btnCancelarClick(Sender: TObject);
 begin
- desativarbtn( btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
-              btnNavegation, pgcPrincipal, true);
- controlindice(pgcPrincipal,0);
- EstadoCadastro:=ecNada;
- LimparEdit;
+  desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
+               btnNavegation, pgcPrincipal, true);
+  controlindice(pgcPrincipal, 0);
+  EstadoCadastro := ecNada;
+  LimparEdit;
 end;
 
 procedure TfrmHeranca.btnFecharClick(Sender: TObject);
 begin
-  close
+  Close;
 end;
 
 procedure TfrmHeranca.btnGravarClick(Sender: TObject);
@@ -148,7 +140,7 @@ begin
                    btnNavegation, pgcPrincipal, true);
       controlindice(pgcPrincipal, 0);
       LimparEdit;
-      qrylistagem.refresh;
+      qrylistagem.Refresh;
     end;
   finally
     EstadoCadastro := ecNada;
@@ -157,103 +149,112 @@ end;
 
 procedure TfrmHeranca.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-      qryListagem.CLOSE;
+  qryListagem.Close;
 end;
 
 procedure TfrmHeranca.FormCreate(Sender: TObject);
 begin
-  qryListagem.Connection:=dtmPrincipal.ConexaoDB;
-  dtsListagem.DataSet:=qryListagem;
-  grdListagem.DataSource:=dtsListagem;
-  btnNavegation.DataSource:=dtsListagem;
+  qryListagem.Connection := dtmPrincipal.ConexaoDB;
+  dtsListagem.DataSet := qryListagem;
+  grdListagem.DataSource := dtsListagem;
+  btnNavegation.DataSource := dtsListagem;
 end;
 
 procedure TfrmHeranca.FormShow(Sender: TObject);
 begin
   if (qryListagem.SQL.Text <> EmptyStr) then
-    QryListagem.Open;
+    qryListagem.Open;
 
   DesabilitareditPK;
   desativarbtn(btnNovo, btnAlterar, btnCancelar, btnApagar, btnGravar,
                btnNavegation, pgcPrincipal, true);
-
-   pgcPrincipal.TabIndex := 0;
+  pgcPrincipal.TabIndex := 0;
 end;
 
-function TfrmHeranca.CampoObrigatorio:boolean;
-var i: integer;
+function TfrmHeranca.CampoObrigatorio: boolean;
+var
+  i: integer;
 begin
-  result:=false;
-  for i := 0 to ComponentCount -1 do begin
-    if (Components[i] is TLabeledEdit) then begin
+  Result := false;
+  for i := 0 to ComponentCount - 1 do
+  begin
+    if (Components[i] is TLabeledEdit) then
+    begin
       if (TLabeledEdit(Components[i]).Tag = 2) and
-          (TLabeledEdit(Components[i]).text = emptyStr) then begin
-            MessageDlg (TLabeledEdit(Components[i]).Editlabel.Caption + ' é um campo obrigatorio!',mtinformation,[mbok], 0);
-          TLabeledEdit(Components[i]).SetFocus;
-          Result := True;
-          Exit;
-          end;
-    end;
-  end;
-end;
-
-procedure TfrmHeranca.DesabilitareditPK;
-var i: integer;
-begin
-  for i := 0 to ComponentCount -1 do begin
-    if (Components[i] is TLabeledEdit) then begin
-      if (TLabeledEdit(Components[i]).Tag = 1) then begin
-            TLabeledEdit(Components[i]).Enabled := false;
+         (TLabeledEdit(Components[i]).Text = EmptyStr) then
+      begin
+        MessageDlg(TLabeledEdit(Components[i]).EditLabel.Caption + ' é um campo obrigatorio!',
+                   mtInformation, [mbOK], 0);
+        TLabeledEdit(Components[i]).SetFocus;
+        Result := True;
+        Exit;
       end;
     end;
   end;
 end;
 
-procedure TfrmHeranca.LimparEdit;
-var i: integer;
+procedure TfrmHeranca.DesabilitareditPK;
+var
+  i: integer;
 begin
-  for i := 0 to ComponentCount -1 do begin
+  for i := 0 to ComponentCount - 1 do
+  begin
     if (Components[i] is TLabeledEdit) then
-      TLabeledEdit(Components[i]).Text:=''
+    begin
+      if (TLabeledEdit(Components[i]).Tag = 1) then
+        TLabeledEdit(Components[i]).Enabled := false;
+    end;
+  end;
+end;
+
+procedure TfrmHeranca.LimparEdit;
+var
+  i: integer;
+begin
+  for i := 0 to ComponentCount - 1 do
+  begin
+    if (Components[i] is TLabeledEdit) then
+      TLabeledEdit(Components[i]).Text := ''
     else if (Components[i] is TEdit) then
-       TEdit(Components[i]).Text:='' ;
+      TEdit(Components[i]).Text := '';
   end;
 end;
 
 function TfrmHeranca.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
 begin
-    if (EstadoCadastro=ecNovo) then
-      showmessage('Cadastro realizado')
-  else if (EstadoCadastro=ecAlterar) then
-      showmessage('Alteração realizado') ;
-       Result:= true;
+  if (EstadoCadastro = ecNovo) then
+    ShowMessage('Cadastro realizado')
+  else if (EstadoCadastro = ecAlterar) then
+    ShowMessage('Alteração realizada');
+  Result := true;
 end;
 
 function TfrmHeranca.Apagar: boolean;
 begin
-       ShowMessage('Deletado');
-       Result:= true;
+  ShowMessage('Deletado');
+  Result := true;
 end;
 
 procedure TfrmHeranca.grdListagemDblClick(Sender: TObject);
 begin
-       btnAlterar.Click;
+  btnAlterar.Click;
 end;
 
 procedure TfrmHeranca.grdListagemTitleClick(Column: TColumn);
 begin
-    IndiceAtual:= Column.FieldName;
-    qryListagem.IndexFieldNames := IndiceAtual;
-
+  IndiceAtual := Column.FieldName;
+  qryListagem.IndexFieldNames := IndiceAtual;
 end;
+
 procedure TfrmHeranca.pgcPrincipalChange(Sender: TObject);
 begin
-
+  // reservado para herdar
 end;
 
 procedure TfrmHeranca.btnPesquisarClick(Sender: TObject);
 begin
-
+  // reservado para herdar
 end;
 
 end.
+

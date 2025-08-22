@@ -1,0 +1,259 @@
+inherited frmCadClientes: TfrmCadClientes
+  Caption = 'Cadastro de Clientes'
+  ClientHeight = 445
+  ClientWidth = 765
+  ExplicitWidth = 771
+  ExplicitHeight = 474
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlRodape: TJvPanel
+    Top = 404
+    Width = 765
+    ExplicitTop = 404
+    ExplicitWidth = 765
+    inherited btnFechar: TJvBitBtn
+      Left = 677
+      ExplicitLeft = 677
+    end
+    inherited btnNavegation: TJvDBNavigator
+      Hints.Strings = ()
+    end
+  end
+  inherited pgcPrincipal: TJvgPageControl
+    Width = 765
+    Height = 404
+    ExplicitWidth = 765
+    ExplicitHeight = 404
+    inherited tablistagem: TTabSheet
+      ExplicitWidth = 757
+      ExplicitHeight = 376
+      inherited JvPanel2: TJvPanel
+        Width = 757
+        ExplicitWidth = 757
+      end
+      inherited grdListagem: TJvDBGrid
+        Width = 757
+        Height = 335
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'id_cliente'
+            Title.Caption = 'C'#243'digo'
+            Width = 66
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'nome'
+            Title.Caption = 'Nome'
+            Width = 181
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'email'
+            Title.Caption = 'E-mail'
+            Width = 205
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'telefone'
+            Title.Caption = 'Telefone'
+            Width = 77
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'dataNascimento'
+            Title.Caption = 'Data de Nascimento'
+            Width = 133
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'endereco'
+            Title.Caption = 'Endere'#231'o'
+            Width = 165
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'bairro'
+            Title.Caption = 'Bairro'
+            Width = 96
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'cidade'
+            Title.Caption = 'Cidade'
+            Width = 79
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'cep'
+            Title.Caption = 'CEP'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'estado'
+            Title.Caption = 'Estado'
+            Width = 53
+            Visible = True
+          end>
+      end
+    end
+    inherited tabManutencao: TTabSheet
+      ExplicitWidth = 757
+      ExplicitHeight = 376
+      object JvLabel1: TJvLabel [0]
+        Left = 3
+        Top = 248
+        Width = 25
+        Height = 13
+        Caption = 'CEP:'
+        Transparent = True
+      end
+      object JvLabel2: TJvLabel [1]
+        Left = 511
+        Top = 117
+        Width = 101
+        Height = 13
+        Caption = 'Data de nascimento:'
+        Transparent = True
+      end
+      object JvLabel3: TJvLabel [2]
+        Left = 511
+        Top = 173
+        Width = 48
+        Height = 13
+        Caption = 'Telefone:'
+        Transparent = True
+      end
+      inherited JvPanel1: TJvPanel
+        Width = 757
+        TabOrder = 9
+        ExplicitWidth = 757
+      end
+      object edtClienteId: TLabeledEdit
+        Tag = 1
+        Left = 3
+        Top = 80
+        Width = 121
+        Height = 21
+        EditLabel.Width = 38
+        EditLabel.Height = 13
+        EditLabel.Caption = 'C'#243'digos'
+        MaxLength = 10
+        NumbersOnly = True
+        TabOrder = 10
+      end
+      object edtNome: TLabeledEdit
+        Tag = 2
+        Left = 3
+        Top = 136
+        Width = 478
+        Height = 21
+        EditLabel.Width = 27
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Nome'
+        MaxLength = 100
+        TabOrder = 0
+      end
+      object edtEmail: TLabeledEdit
+        Left = 3
+        Top = 192
+        Width = 478
+        Height = 21
+        EditLabel.Width = 32
+        EditLabel.Height = 13
+        EditLabel.Caption = 'E-mail:'
+        TabOrder = 2
+      end
+      object edtEndereco: TLabeledEdit
+        Tag = 2
+        Left = 145
+        Top = 267
+        Width = 483
+        Height = 21
+        EditLabel.Width = 49
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Endere'#231'o:'
+        MaxLength = 100
+        TabOrder = 5
+      end
+      object edtEstado: TLabeledEdit
+        Tag = 2
+        Left = 492
+        Top = 323
+        Width = 136
+        Height = 21
+        EditLabel.Width = 37
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Estado:'
+        MaxLength = 100
+        TabOrder = 8
+      end
+      object edtCidade: TLabeledEdit
+        Tag = 2
+        Left = 224
+        Top = 323
+        Width = 241
+        Height = 21
+        EditLabel.Width = 37
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Cidade:'
+        MaxLength = 100
+        TabOrder = 7
+      end
+      object edtBairro: TLabeledEdit
+        Tag = 2
+        Left = 3
+        Top = 323
+        Width = 198
+        Height = 21
+        EditLabel.Width = 32
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Bairro:'
+        MaxLength = 100
+        TabOrder = 6
+      end
+      object edtDataNascimento: TJvDateEdit
+        Left = 514
+        Top = 136
+        Width = 121
+        Height = 21
+        ShowNullDate = False
+        TabOrder = 1
+      end
+      object edtTelefone: TJvMaskEdit
+        Left = 514
+        Top = 192
+        Width = 117
+        Height = 21
+        EditMask = '(99) 9999-9999;1;_'
+        MaxLength = 14
+        TabOrder = 3
+        Text = '(  )     -    '
+      end
+      object JvMaskEdit1: TJvMaskEdit
+        Left = 3
+        Top = 267
+        Width = 120
+        Height = 21
+        EditMask = '99.999-99;1;_'
+        MaxLength = 9
+        TabOrder = 4
+        Text = '  .   -  '
+      end
+    end
+  end
+  inherited qryListagem: TFDQuery
+    Active = True
+    SQL.Strings = (
+      'select * from cliente;')
+  end
+end

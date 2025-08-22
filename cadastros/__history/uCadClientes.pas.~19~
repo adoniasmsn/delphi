@@ -1,0 +1,156 @@
+unit uCadClientes;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, uTelaHeranca, Data.DB,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error,
+  FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  JvDataSource, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.DBCtrls, JvDBControls,
+  Vcl.Grids, Vcl.DBGrids, JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.Buttons, JvExButtons, JvBitBtn,
+  Vcl.Mask, JvExMask, JvToolEdit, JvMaskEdit, Vcl.ExtCtrls, JvExExtCtrls, JvExtComponent, JvPanel,
+  Vcl.ComCtrls, JvgPage, cCadCliente, uconexaodb, uEnum, JvExControls, JvLabel;
+
+type
+  TfrmCadClientes = class(TfrmHeranca)
+    edtClienteId: TLabeledEdit;         // Tag=1 (PK) -> desabilita
+    edtNome: TLabeledEdit;              // Tag=2 se quiser obrigatório
+    edtEmail: TLabeledEdit;
+    edtEndereco: TLabeledEdit;
+    JvLabel1: TJvLabel;
+    edtDataNascimento: TJvDateEdit;
+    JvLabel2: TJvLabel;
+    edtTelefone: TJvMaskEdit;
+    JvLabel3: TJvLabel;
+    edtEstado: TLabeledEdit;
+    edtCidade: TLabeledEdit;
+    edtBairro: TLabeledEdit;
+    JvMaskEdit1: TJvMaskEdit;           // CEP
+  private
+    oCliente: TCliente;
+  public
+    function Apagar: boolean; override;
+    procedure btnAlterarClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
+    function Gravar(EstadoCadastro: TEstadoCadastro): boolean; override;
+  end;
+
+var
+  frmCadClientes: TfrmCadClientes;
+
+implementation
+
+{$R *.dfm}
+
+function TfrmCadClientes.Apagar: boolean;
+begin
+  Result := False;
+  if not Assigned(oCliente) then Exit;
+  if oCliente.Selecionar(QryListagem.FieldByName('id_cliente').AsInteger) then
+    Result := oCliente.Apagar;
+end;
+
+function TfrmCadClientes.Gravar(EstadoCadastro: TEstadoCadastro): boolean;
+begin
+  Result := False;
+  if not Assigned(oCliente) then
+    raise Exception.Create('Objeto cliente não foi criado.');
+
+  // Preenche o objeto com os dados da tela
+  if Trim(edtClienteId.Text) <> '' then
+    oCliente.id_cliente := StrToIntDef(edtClienteId.Text, 0)
+  else
+    oCliente.id_cliente := 0;
+
+  oCliente.nome   := Trim(edtNome.Text);
+  oCliente.email  := Trim(edtEmail.Text);
+  oCliente.endereco := Trim(edtEndereco.Text);
+  oCliente.telefone := Trim(edtTelefone.Text);
+  oCliente.estado := Trim(edtEstado.Text);
+  oCliente.cidade := Trim(edtCidade.Text);
+  oCliente.bairro := Trim(edtBairro.Text);
+  oCliente.cep    := Trim(JvMaskEdit1.Text);
+
+  if edtDataNascimento.Checked then
+    oCliente.dataNascimento := edtDataNascimento.Date
+  else
+    oCliente.dataNascimento := 0; // vai gravar NULL
+
+  case EstadoCadastro of
+    ecNovo:
+      begin
+        Result := oCliente.Gravar;
+        if Result then
+        begin
+          edtClienteId.Text := IntToStr(oCliente.id_cliente); // ID gerado
+          ShowMessage('Cliente gravado com sucesso!');
+        end;
+      end;
+    ecAlterar:
+      begin
+        if oCliente.id_cliente <= 0 then
+          raise Exception.Create('ID do cliente inválido para atualização.');
+        Result := oCliente.Atualizar;
+        if Result then
+          ShowMessage('Cliente atualizado com sucesso!');
+      end;
+  else
+    Result := False;
+  end;
+end;
+
+procedure TfrmCadClientes.btnAlterarClick(Sender: TObject);
+begin
+  // carrega dados do selecionado antes de alterar
+  if Assigned(oCliente) and
+     oCliente.Selecionar(QryListagem.FieldByName('id_cliente').AsInteger) then
+  begin
+    edtClienteId.Text := IntToStr(oCliente.id_cliente);
+    edtNome.Text      := oCliente.nome;
+    edtEmail.Text     := oCliente.email;
+    edtEndereco.Text  := oCliente.endereco;
+    edtTelefone.Text  := oCliente.telefone;
+    edtEstado.Text    := oCliente.estado;
+    edtCidade.Text    := oCliente.cidade;
+    edtBairro.Text    := oCliente.bairro;
+    JvMaskEdit1.Text  := oCliente.cep;
+    if oCliente.dataNascimento > 0 then
+    begin
+      edtDataNascimento.Checked := True;
+      edtDataNascimento.Date := oCliente.dataNascimento;
+    end
+    else
+      edtDataNascimento.Checked := False;
+  end
+  else
+  begin
+    btnCancelar.Click;
+    Abort;
+  end;
+
+  inherited; // seta EstadoCadastro := ecAlterar e desabilita/abilita botões
+end;
+
+procedure TfrmCadClientes.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if Assigned(oCliente) then
+    FreeAndNil(oCliente);
+  inherited; // fecha qryListagem da base
+end;
+
+procedure TfrmCadClientes.FormCreate(Sender: TObject);
+begin
+  inherited; // configura conexões/datasource da base
+  if (not Assigned(dtmPrincipal)) or (dtmPrincipal.ConexaoDB = nil) then
+    raise Exception.Create('DataModule/conexão não está criado.');
+
+  oCliente := TCliente.Create(dtmPrincipal.ConexaoDB);
+
+  // (opcional) definir aqui o SQL da listagem:
+  // qryListagem.SQL.Text := 'SELECT id_cliente, nome, email FROM Cliente ORDER BY nome';
+end;
+
+end.
+

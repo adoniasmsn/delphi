@@ -20,7 +20,7 @@ type
     F_cidade:string;
     F_bairro:string;
     F_cep:string;
-    F_dataNascimento= tdateTime;
+    F_dataNascimento:TDateTime;
     F_estado:string;
    public
     constructor Create(aConexao:TFDConnection);
@@ -29,8 +29,169 @@ type
     function Apagar:Boolean;
     function Atualizar:Boolean;
     function Selecionar(id:integer):Boolean;
+   published
+     property id_cliente: integer read F_id_cliente  write F_id_cliente;
+     property nome : string read F_nome write F_nome;
+     property email: string read F_email write F_email;
+     property telefone: string read F_telefone write F_telefone;
+     property endereco: string read F_endereco write F_endereco;
+     property cidade: string read F_cidade write F_cidade;
+     property bairro: string read F_bairro write F_bairro;
+     property cep: string read F_cep write F_cep;
+     property dataNascimento: TDateTime read F_dataNascimento write F_dataNascimento;
+     property estado: string read F_estado write F_estado;
 
   end;
 implementation
+{ TCliente }
 
+function TCliente.Apagar: Boolean;
+var
+  QryApagar: TFDQuery;
+begin
+  Result := False;
+
+  // Confirmação antes de apagar
+  if MessageDlg('Deseja realmente apagar o cliente '+F_nome+'?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+    Exit; // se o usuário escolher "Não", apenas sai da função
+
+  try
+    QryApagar := TFDQuery.Create(nil);
+    QryApagar.Connection := conexaoDB;
+    QryApagar.SQL.Clear;
+    QryApagar.SQL.Add('DELETE FROM Cliente WHERE id_cliente = :id_cliente');
+    QryApagar.ParamByName('id_cliente').Value := F_id_cliente;
+
+    try
+      QryApagar.ExecSQL;
+      Result := True;
+    except
+      Result := False;
+    end;
+  finally
+    if Assigned(QryApagar) then
+      FreeAndNil(QryApagar);
+  end;
+end;
+
+function TCliente.Atualizar: Boolean;
+var
+  QryAtualizar: TFDQuery;
+begin
+  try
+    Result := True;
+    QryAtualizar := TFDQuery.Create(nil);
+    QryAtualizar.Connection := conexaoDB;
+    QryAtualizar.SQL.Clear;
+    QryAtualizar.SQL.Add(
+      'UPDATE Cliente ' +
+      'SET nome = :nome, email = :email, telefone =:telefone,endereco =:endereco,'+
+      'cidade=:cidade,bairro=:bairro,cep=:cep,dataNascimento=:dataNascimento, estado=:estado ' +
+      'WHERE id_cliente = :id_cliente');
+
+    QryAtualizar.ParamByName('nome').asString := Self.F_nome;
+    QryAtualizar.ParamByName('email').asString := Self.F_email;
+    QryAtualizar.ParamByName('telefone').asString := Self.F_telefone;
+    QryAtualizar.ParamByName('endereco').asString := Self.F_endereco;
+    QryAtualizar.ParamByName('cidade').asString := Self.F_cidade;
+    QryAtualizar.ParamByName('bairro').asString := Self.F_bairro;
+    QryAtualizar.ParamByName('cep').asString := Self.F_cep;
+    QryAtualizar.ParamByName('estado').asString := Self.F_estado;
+    QryAtualizar.ParamByName('dataNascimento').AsDateTime := Self.F_dataNascimento;
+    QryAtualizar.ParamByName('id_cliente').asInteger := Self.F_id_Cliente;
+
+    try
+      QryAtualizar.ExecSQL;
+    except
+      Result := False;
+    end;
+  finally
+    if Assigned(QryAtualizar) then
+      FreeAndNil(QryAtualizar);
+  end;
+end;
+
+function TCliente.Gravar: Boolean;
+var QryGravar:TFDQuery;
+begin
+
+          try
+            result:= true;
+             QryGravar:=TFDQuery.Create(nil);
+             QryGravar.Connection:=conexaoDB;
+             QryGravar.SQL.Clear;
+             QryGravar.SQL.Add('INSERT INTO Cliente(nome,email,telefone,endereco,cidade,bairro,cep,dataNascimento, estado)VALUES (:nome,:email,:telefone,:endereco,:cidade,:bairro,:cep,:dataNascimento,:estado') ;
+              QryGravar.ParamByName('nome').value:= Self.F_nome;
+              QryGravar.ParamByName('email').value := Self.F_email;
+              QryGravar.ParamByName('telefone').value := Self.F_telefone;
+               QryGravar.ParamByName('endereco').value := Self.F_endereco;
+              QryGravar.ParamByName('cidade').value := Self.F_cidade;
+              QryGravar.ParamByName('bairro').value := Self.F_bairro;
+               QryGravar.ParamByName('cep').value := Self.F_cep;
+               QryGravar.ParamByName('dataNascimento').AsDateTime := Self.F_dataNascimento;
+                QryGravar.ParamByName('estado').value := Self.F_estado;
+
+             try
+
+             QryGravar.ExecSQL;
+             Except
+                   result:=false;
+             end;
+          finally
+               if Assigned(QryGravar) then
+               freeandNil(QryGravar);
+          end;
+end;
+
+function TCliente.Selecionar(id: integer): Boolean;
+var
+  QrySelecionar: TFDQuery;
+begin
+  try
+    Result := False;
+    QrySelecionar := TFDQuery.Create(nil);
+    QrySelecionar.Connection := conexaoDB;
+    QrySelecionar.SQL.Clear;
+    QrySelecionar.SQL.Add(
+      'SELECT id_cliente, nome,email,telefone,endereco,cidade,bairro,cep,dataNascimento, estado ' +
+      'FROM Cliente ' +
+      'WHERE id_cliente = :id_cliente');
+
+    QrySelecionar.ParamByName('id_cliente').Value := id;
+
+    try
+      QrySelecionar.Open;
+      if not QrySelecionar.IsEmpty then
+      begin
+        // Preenche os atributos da classe com os valores do banco
+        Self.F_id_cliente := QrySelecionar.FieldByName('id_cliente').AsInteger;
+        Self.F_nome := QrySelecionar.FieldByName('nome').AsString;
+        Self.F_email := QrySelecionar.FieldByName('email').AsString;
+        Self.F_telefone := QrySelecionar.FieldByName('telefone').AsString;
+        Self.F_endereco := QrySelecionar.FieldByName('endereco').AsString;
+        Self.F_cidade := QrySelecionar.FieldByName('cidade').AsString;
+        Self.F_bairro := QrySelecionar.FieldByName('bairro').AsString;
+        Self.F_cep  := QrySelecionar.FieldByName('cep').AsString;
+        Self.F_dataNascimento := QrySelecionar.FieldByName('dataNascimento').AsDateTime;
+        Self.F_estado := QrySelecionar.FieldByName('estado').AsString;
+        Result := True;
+      end;
+    except
+      Result := False;
+    end;
+  finally
+    if Assigned(QrySelecionar) then
+      FreeAndNil(QrySelecionar);
+  end;
+end;
+
+constructor TCliente.Create(aConexao:TFDConnection);
+begin
+    conexaoDB:=aConexao;
+end;
+
+destructor TCliente.Destroy;
+begin
+  inherited;
+end;
 end.

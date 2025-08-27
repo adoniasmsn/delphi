@@ -120,7 +120,7 @@ begin
              QryGravar:=TFDQuery.Create(nil);
              QryGravar.Connection:=conexaoDB;
              QryGravar.SQL.Clear;
-             QryGravar.SQL.Add('INSERT INTO Cliente(nome,email,telefone,endereco,cidade,bairro,cep,dataNascimento, estado)VALUES (:nome,:email,:telefone,:endereco,:cidade,:bairro,:cep,:dataNascimento,:estado') ;
+             QryGravar.SQL.Add('INSERT INTO Cliente(nome,email,telefone,endereco,cidade,bairro,cep,dataNascimento, estado)VALUES (:nome,:email,:telefone,:endereco,:cidade,:bairro,:cep,:dataNascimento,:estado)');
               QryGravar.ParamByName('nome').value:= Self.F_nome;
               QryGravar.ParamByName('email').value := Self.F_email;
               QryGravar.ParamByName('telefone').value := Self.F_telefone;
@@ -128,7 +128,7 @@ begin
               QryGravar.ParamByName('cidade').value := Self.F_cidade;
               QryGravar.ParamByName('bairro').value := Self.F_bairro;
                QryGravar.ParamByName('cep').value := Self.F_cep;
-               QryGravar.ParamByName('dataNascimento').AsDateTime := Self.F_dataNascimento;
+               QryGravar.ParamByName('dataNascimento').AsDateTime:= Self.F_dataNascimento;
                 QryGravar.ParamByName('estado').value := Self.F_estado;
 
              try

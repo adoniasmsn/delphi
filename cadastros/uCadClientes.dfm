@@ -26,6 +26,8 @@ inherited frmCadClientes: TfrmCadClientes
     ExplicitWidth = 765
     ExplicitHeight = 404
     inherited tablistagem: TTabSheet
+      ExplicitLeft = 4
+      ExplicitTop = 24
       ExplicitWidth = 757
       ExplicitHeight = 376
       inherited JvPanel2: TJvPanel
@@ -138,7 +140,7 @@ inherited frmCadClientes: TfrmCadClientes
       end
       inherited JvPanel1: TJvPanel
         Width = 757
-        TabOrder = 8
+        TabOrder = 10
         ExplicitWidth = 757
       end
       object edtClienteId: TLabeledEdit
@@ -152,7 +154,7 @@ inherited frmCadClientes: TfrmCadClientes
         EditLabel.Caption = 'C'#243'digos'
         MaxLength = 10
         NumbersOnly = True
-        TabOrder = 9
+        TabOrder = 0
       end
       object edtNome: TLabeledEdit
         Tag = 2
@@ -164,7 +166,7 @@ inherited frmCadClientes: TfrmCadClientes
         EditLabel.Height = 13
         EditLabel.Caption = 'Nome'
         MaxLength = 150
-        TabOrder = 0
+        TabOrder = 1
       end
       object edtEmail: TLabeledEdit
         Left = 3
@@ -175,7 +177,7 @@ inherited frmCadClientes: TfrmCadClientes
         EditLabel.Height = 13
         EditLabel.Caption = 'E-mail:'
         MaxLength = 150
-        TabOrder = 1
+        TabOrder = 3
       end
       object edtEndereco: TLabeledEdit
         Tag = 2
@@ -187,7 +189,7 @@ inherited frmCadClientes: TfrmCadClientes
         EditLabel.Height = 13
         EditLabel.Caption = 'Endere'#231'o:'
         MaxLength = 200
-        TabOrder = 4
+        TabOrder = 6
       end
       object edtEstado: TLabeledEdit
         Tag = 2
@@ -199,7 +201,7 @@ inherited frmCadClientes: TfrmCadClientes
         EditLabel.Height = 13
         EditLabel.Caption = 'Estado:'
         MaxLength = 2
-        TabOrder = 7
+        TabOrder = 9
       end
       object edtCidade: TLabeledEdit
         Tag = 2
@@ -211,7 +213,7 @@ inherited frmCadClientes: TfrmCadClientes
         EditLabel.Height = 13
         EditLabel.Caption = 'Cidade:'
         MaxLength = 100
-        TabOrder = 6
+        TabOrder = 8
       end
       object edtBairro: TLabeledEdit
         Tag = 2
@@ -223,7 +225,7 @@ inherited frmCadClientes: TfrmCadClientes
         EditLabel.Height = 13
         EditLabel.Caption = 'Bairro:'
         MaxLength = 100
-        TabOrder = 5
+        TabOrder = 7
       end
       object edtTelefone: TJvMaskEdit
         Left = 514
@@ -232,7 +234,7 @@ inherited frmCadClientes: TfrmCadClientes
         Height = 21
         EditMask = '(99) 9999-9999;1;_'
         MaxLength = 14
-        TabOrder = 2
+        TabOrder = 4
         Text = '(  )     -    '
       end
       object JvMaskEdit1: TJvMaskEdit
@@ -242,7 +244,7 @@ inherited frmCadClientes: TfrmCadClientes
         Height = 21
         EditMask = '99.999-999;1;_'
         MaxLength = 10
-        TabOrder = 3
+        TabOrder = 5
         Text = '  .   -   '
       end
       object edtDataNascimento: TJvDateEdit
@@ -251,7 +253,7 @@ inherited frmCadClientes: TfrmCadClientes
         Width = 121
         Height = 21
         ShowNullDate = False
-        TabOrder = 10
+        TabOrder = 2
       end
     end
   end

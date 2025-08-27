@@ -76,12 +76,12 @@ begin
   if (EstadoCadastro = ecNovo) then
   begin
     Result := oCliente.Gravar;
-    ShowMessage('CLiente gravado com sucesso!');
+    ShowMessage('Cliente gravado com sucesso!');
   end
   else if (EstadoCadastro = ecAlterar) then
   begin
     Result := oCliente.Atualizar;
-    ShowMessage('cliente atualizado com sucesso!');
+    ShowMessage('Cliente atualizado com sucesso!');
   end
   else
     Result := False;
